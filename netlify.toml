@@ -1,0 +1,7 @@
+[build]
+  command = "npm run build"
+  functions = "functions" # Directorio de salida de las funciones compiladas
+
+[functions]
+  directory = "functions"
+  node_bundler = "esbuild"
