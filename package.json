@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "build": "npm run build:lambda",
-    "build:lambda": "netlify-lambda build netlify/functions",
-    "serve:lambda": "netlify-lambda serve netlify/functions",
+    "build": "echo 'Building functions...' && netlify build", // Comando principal de Netlify
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,8 +15,5 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "serverless-http": "^4.0.0"
-  },
-  "devDependencies": {
-    "netlify-lambda": "^2.0.16"
   }
 }

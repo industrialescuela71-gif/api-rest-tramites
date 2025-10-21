@@ -1,7 +1,7 @@
 [build]
-  command = "npm run build:lambda" 
-  functions = "functions"  
+  command = "npm run build" 
   
 [functions]
-  directory = "functions"
+  directory = "netlify/functions" 
+  
   node_bundler = "esbuild"
