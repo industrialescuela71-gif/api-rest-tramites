@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "titulo": "Inscripción al Registro Civil",
+    "descripcion": "Registro de nacimiento para obtener el primer DNI.",
+    "tiempo_estimado": "1 hora",
+    "costo": "Gratuito",
+    "publico_objetivo": "Padres de recién nacidos.",
+    "direccion_tramitacion": "Calle Falsa 123, Oficinas de Registro Civil."
+  },
+  {
+    "id": 2,
+    "titulo": "Solicitud de Tarjeta de Transporte",
+    "descripcion": "Solicitud del plástico para el uso del transporte público.",
+    "tiempo_estimado": "30 minutos (online)",
+    "costo": "Costo variable según emisión.",
+    "publico_objetivo": "Toda persona mayor de 16 años que viva en Baradero.",
+    "direccion_tramitacion": "Web municipal o Centro de Atención al Ciudadano."
+  }
+]
