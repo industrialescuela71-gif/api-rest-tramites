@@ -69,30 +69,8 @@
         ><textarea id="descripcion" required></textarea>
       </div>
       <div class="form-group">
-        <label>Tiempo Estimado:</label>
-        <div style="display: flex; gap: 10px; align-items: center">
-          <input
-            type="number"
-            id="tiempo_horas"
-            min="0"
-            max="23"
-            placeholder="Horas"
-            style="width: 80px"
-            required
-          />
-          <span>h</span>
-          <input
-            type="number"
-            id="tiempo_minutos"
-            min="0"
-            max="59"
-            placeholder="Min"
-            style="width: 80px"
-            required
-          />
-          <span>min</span>
-        </div>
-        <input type="hidden" id="tiempo_estimado" />
+        <label>Tiempo Estimado:</label
+        ><input type="time" id="tiempo_estimado" required />
       </div>
       <div class="form-group">
         <label>Costo:</label><input type="text" id="costo" required />
@@ -114,27 +92,6 @@
     <div id="resultados">Esperando acción...</div>
 
     <script>
-      document
-        .getElementById("form-crear")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-
-          // Construir el tiempo estimado desde los selectores
-          const horas = document.getElementById("tiempo_horas").value;
-          const minutos = document.getElementById("tiempo_minutos").value;
-          const tiempoEstimado = `${horas}h ${minutos}min`;
-
-          const nuevoTramite = {
-            titulo: document.getElementById("titulo").value,
-            descripcion: document.getElementById("descripcion").value,
-            tiempo_estimado: tiempoEstimado,
-            costo: document.getElementById("costo").value,
-            publico_objetivo: document.getElementById("publico_objetivo").value,
-            direccion_tramitacion: document.getElementById(
-              "direccion_tramitacion"
-            ).value,
-          };
-        });
       // 🔧 Detectar entorno automáticamente
       const API_URL =
         window.location.hostname.includes("localhost") ||
