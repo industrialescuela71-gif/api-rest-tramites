@@ -29,7 +29,6 @@
         padding: 10px;
         margin-bottom: 10px;
       }
-      /* Estilos para el formulario de POST */
       .form-group {
         margin-bottom: 10px;
       }
@@ -49,8 +48,8 @@
   <body>
     <h1>Administración de Guía de Trámites (Demo Frontend)</h1>
     <p>
-      La siguiente interfaz se comunica con tu API REST en
-      <strong>http://localhost:3000</strong>.
+      Esta interfaz se comunica con tu API REST en:
+      <strong id="api-url-label"></strong>
     </p>
 
     <hr />
@@ -92,10 +91,17 @@
     <div id="resultados">Esperando acción...</div>
 
     <script>
-      const API_URL = "http://localhost:3000/tramites";
+      // 🔧 Detectar entorno automáticamente
+      const API_URL =
+        window.location.hostname.includes("localhost") ||
+        window.location.hostname.includes("127.0.0.1")
+          ? "http://localhost:3000/tramites"
+          : "https://api-guia-de-tramites.onrender.com/tramites";
+
+      document.getElementById("api-url-label").textContent = API_URL;
+
       const resultadosDiv = document.getElementById("resultados");
 
-      // Función para limpiar y mostrar mensajes en el área de resultados
       function mostrarResultado(contenido, esError = false) {
         resultadosDiv.innerHTML = esError
           ? `<span style="color: red; font-weight: bold;">ERROR:</span> ${contenido}`
@@ -103,14 +109,7 @@
       }
 
       // ------------------------------------------------------------------
-      // Lógica GET: Obtener y mostrar todos los trámites
-      // ------------------------------------------------------------------
-      // index.html - DENTRO DEL BLOQUE <script>
-
-      // ... (API_URL, mostrarResultado, etc., permanecen iguales) ...
-
-      // ------------------------------------------------------------------
-      // Lógica GET: Obtener y mostrar todos los trámites (CON BOTONES)
+      // GET: Obtener y mostrar todos los trámites
       // ------------------------------------------------------------------
       async function obtenerTodos() {
         mostrarResultado("Cargando trámites...");
@@ -118,13 +117,12 @@
           const response = await fetch(API_URL);
           const data = await response.json();
 
-          if (!response.ok) {
+          if (!response.ok)
             throw new Error(
               `Error ${response.status}: ${
                 data.error || "Fallo al obtener datos"
               }`
             );
-          }
 
           if (data.length === 0) {
             mostrarResultado("No hay trámites cargados.");
@@ -134,53 +132,47 @@
           let html = "<h3>Trámites Encontrados:</h3>";
           data.forEach((tramite) => {
             html += `
-                <div class="tramite-card" id="card-${tramite.id}">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <strong>ID: ${tramite.id}</strong> - <strong>${
+              <div class="tramite-card" id="card-${tramite.id}">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong>ID: ${tramite.id}</strong> - <strong>${
               tramite.titulo
             }</strong>
-                        <div>
-                            <button onclick="prepararModificacion(${
-                              tramite.id
-                            }, '${
-              tramite.titulo
-            }')" style="background-color: #2196F3; color: white;">Modificar</button>
-                            <button onclick="eliminarTramite(${
-                              tramite.id
-                            })" style="background-color: #f44336; color: white;">Eliminar</button>
-                        </div>
-                    </div>
-                    
-                    <p>Descripción: ${tramite.descripcion}</p>
-                    <ul>
-                        <li>Tiempo: ${tramite.tiempo_estimado || "N/A"}</li>
-                        <li>Costo: ${tramite.costo || "N/A"}</li>
-                        <li>Público Objetivo: ${
-                          tramite.publico_objetivo || "N/A"
-                        }</li>
-                        <li style="font-weight: bold;">Dirección: ${
-                          tramite.direccion_tramitacion || "N/A"
-                        }</li>
-                    </ul>
-                    <div id="modificar-form-${tramite.id}"></div>
+                  <div>
+                    <button onclick="prepararModificacion(${
+                      tramite.id
+                    })" style="background-color: #2196F3; color: white;">Modificar</button>
+                    <button onclick="eliminarTramite(${
+                      tramite.id
+                    })" style="background-color: #f44336; color: white;">Eliminar</button>
+                  </div>
                 </div>
-            `;
+                <p>Descripción: ${tramite.descripcion}</p>
+                <ul>
+                  <li>Tiempo: ${tramite.tiempo_estimado || "N/A"}</li>
+                  <li>Costo: ${tramite.costo || "N/A"}</li>
+                  <li>Público Objetivo: ${
+                    tramite.publico_objetivo || "N/A"
+                  }</li>
+                  <li><strong>Dirección:</strong> ${
+                    tramite.direccion_tramitacion || "N/A"
+                  }</li>
+                </ul>
+                <div id="modificar-form-${tramite.id}"></div>
+              </div>`;
           });
           mostrarResultado(html);
         } catch (error) {
           mostrarResultado(error.message, true);
         }
       }
-      // ... (continúa el código de la función POST) ...
 
       // ------------------------------------------------------------------
-      // Lógica POST: Crear un nuevo trámite
+      // POST: Crear un nuevo trámite
       // ------------------------------------------------------------------
       document
         .getElementById("form-crear")
         .addEventListener("submit", async (e) => {
-          e.preventDefault(); // Previene que el formulario se envíe de forma tradicional
-
+          e.preventDefault();
           const nuevoTramite = {
             titulo: document.getElementById("titulo").value,
             descripcion: document.getElementById("descripcion").value,
@@ -196,24 +188,20 @@
 
           try {
             const response = await fetch(API_URL, {
-              method: "POST", // Definir el método HTTP como POST
-              headers: {
-                "Content-Type": "application/json", // Informar al servidor que enviamos JSON
-              },
-              body: JSON.stringify(nuevoTramite), // Convertir el objeto JS a una cadena JSON
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(nuevoTramite),
             });
 
             const data = await response.json();
 
             if (response.status === 201) {
               mostrarResultado(
-                `Trámite CREADO exitosamente. ID asignado: <strong>${data.id}</strong>.`,
-                false
+                `Trámite creado exitosamente (ID: <strong>${data.id}</strong>).`
               );
-              document.getElementById("form-crear").reset(); // Limpiar formulario
-              obtenerTodos(); // Recargar la lista para ver el nuevo trámite
+              document.getElementById("form-crear").reset();
+              obtenerTodos();
             } else {
-              // Manejo de errores 400 u otros errores del servidor
               throw new Error(
                 `Fallo en la creación: ${data.error || JSON.stringify(data)}`
               );
@@ -223,34 +211,25 @@
           }
         });
 
-      // index.html - DENTRO DEL BLOQUE <script>
-
       // ------------------------------------------------------------------
-      // Lógica DELETE: Eliminar un trámite
+      // DELETE: Eliminar trámite
       // ------------------------------------------------------------------
       async function eliminarTramite(id) {
-        if (!confirm(`¿Estás seguro de ELIMINAR el trámite con ID ${id}?`)) {
-          return;
-        }
+        if (!confirm(`¿Eliminar el trámite con ID ${id}?`)) return;
+        mostrarResultado(`Eliminando trámite ${id}...`);
 
-        mostrarResultado(`Eliminando trámite con ID ${id}...`);
         try {
           const response = await fetch(`${API_URL}/${id}`, {
-            method: "DELETE", // Método HTTP DELETE
+            method: "DELETE",
           });
-
           if (response.status === 204) {
-            // Éxito (204 No Content)
-            mostrarResultado(
-              `Trámite con ID ${id} eliminado exitosamente.`,
-              false
-            );
-            obtenerTodos(); // Recargar la lista
-          } else if (response.status === 404) {
-            const data = await response.json();
-            throw new Error(`404: ${data.error}`);
+            mostrarResultado(`Trámite con ID ${id} eliminado.`);
+            obtenerTodos();
           } else {
-            throw new Error(`Fallo al eliminar, código: ${response.status}`);
+            const data = await response.json();
+            throw new Error(
+              `Error ${response.status}: ${data.error || "Fallo al eliminar"}`
+            );
           }
         } catch (error) {
           mostrarResultado(error.message, true);
@@ -258,35 +237,30 @@
       }
 
       // ------------------------------------------------------------------
-      // Lógica PUT: Modificar un trámite
+      // PUT: Modificar trámite
       // ------------------------------------------------------------------
-
-      // 1. Prepara el formulario de modificación
       async function prepararModificacion(id) {
-        // 1. Obtener los datos actuales del trámite para precargar el formulario
         const response = await fetch(`${API_URL}/${id}`);
         const tramite = await response.json();
 
         const formContainer = document.getElementById(`modificar-form-${id}`);
         formContainer.innerHTML = `
-        <br><h4 style="margin-top:0;">Modificar Trámite ID ${id}:</h4>
-        <form id="form-modificar-${id}" onsubmit="modificarTramite(event, ${id})">
+          <br><h4>Modificar Trámite ID ${id}:</h4>
+          <form id="form-modificar-${id}" onsubmit="modificarTramite(event, ${id})">
             <div class="form-group"><label>Título:</label><input type="text" id="mod-titulo-${id}" value="${tramite.titulo}" required></div>
             <div class="form-group"><label>Descripción:</label><textarea id="mod-descripcion-${id}">${tramite.descripcion}</textarea></div>
             <div class="form-group"><label>Tiempo Estimado:</label><input type="text" id="mod-tiempo-${id}" value="${tramite.tiempo_estimado}"></div>
             <div class="form-group"><label>Costo:</label><input type="text" id="mod-costo-${id}" value="${tramite.costo}"></div>
             <div class="form-group"><label>Público Objetivo:</label><input type="text" id="mod-publico-${id}" value="${tramite.publico_objetivo}"></div>
             <div class="form-group"><label>Dirección:</label><input type="text" id="mod-direccion-${id}" value="${tramite.direccion_tramitacion}"></div>
-            <button type="submit" style="background-color: #FFC107; color: black;">Guardar Cambios (PUT)</button>
-            <button type="button" onclick="document.getElementById('modificar-form-${id}').innerHTML = ''">Cancelar</button>
-        </form>
-    `;
+            <button type="submit" style="background-color:#FFC107;color:black;">Guardar Cambios</button>
+            <button type="button" onclick="document.getElementById('modificar-form-${id}').innerHTML=''">Cancelar</button>
+          </form>
+        `;
       }
 
-      // 2. Envía la solicitud PUT
       async function modificarTramite(e, id) {
         e.preventDefault();
-
         const tramiteModificado = {
           titulo: document.getElementById(`mod-titulo-${id}`).value,
           descripcion: document.getElementById(`mod-descripcion-${id}`).value,
@@ -301,26 +275,16 @@
 
         try {
           const response = await fetch(`${API_URL}/${id}`, {
-            method: "PUT", // Método HTTP PUT
-            headers: {
-              "Content-Type": "application/json",
-            },
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(tramiteModificado),
           });
-
           const data = await response.json();
-
           if (response.ok) {
-            // 200 OK
-            mostrarResultado(
-              `Trámite ID ${id} MODIFICADO exitosamente.`,
-              false
-            );
-            obtenerTodos(); // Recargar la lista
+            mostrarResultado(`Trámite ID ${id} modificado exitosamente.`);
+            obtenerTodos();
           } else {
-            throw new Error(
-              `Fallo en la modificación: ${data.error || JSON.stringify(data)}`
-            );
+            throw new Error(`Fallo: ${data.error || JSON.stringify(data)}`);
           }
         } catch (error) {
           mostrarResultado(error.message, true);
