@@ -5,7 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const { readTramites, writeTramites } = require("./utils/fileManager"); // Importamos las funciones
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 // 2. Base de Datos Simulada (Carga los datos desde el archivo)
@@ -23,6 +23,19 @@ let nextId = getNextId(tramites); // Calcula el nextId basado en los datos carga
 
 // 3. Middleware Esencial
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.json({
+    mensaje: "API de Guía de Trámites",
+    endpoints: {
+      listar: "GET /tramites",
+      obtener: "GET /tramites/:id",
+      crear: "POST /tramites",
+      actualizar: "PUT /tramites/:id",
+      eliminar: "DELETE /tramites/:id",
+    },
+  });
+});
 
 // ----------------------------------------------------
 // 4. Endpoints CRUD (Ahora con escritura en disco)
