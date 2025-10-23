@@ -5,156 +5,607 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Guía de Trámites - DEMO API</title>
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-      }
-      h1 {
-        border-bottom: 2px solid #ccc;
-        padding-bottom: 10px;
-      }
-      button {
-        padding: 10px 15px;
-        margin-top: 10px;
-        cursor: pointer;
-      }
-      #resultados {
-        margin-top: 20px;
-        border: 1px solid #eee;
-        padding: 15px;
-        background-color: #f9f9f9;
-      }
-      .tramite-card {
-        border: 1px solid #ddd;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
         padding: 10px;
-        margin-bottom: 10px;
+        color: #333;
       }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 25px 20px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: clamp(1.5em, 5vw, 2.5em);
+        margin-bottom: 10px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+      }
+
+      .header p {
+        font-size: clamp(0.9em, 3vw, 1.1em);
+        opacity: 0.95;
+        word-break: break-all;
+      }
+
+      #api-url-label {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 12px;
+        border-radius: 15px;
+        display: inline-block;
+        margin-top: 8px;
+        font-weight: 500;
+        font-size: clamp(0.8em, 2.5vw, 1em);
+      }
+
+      .content {
+        padding: 20px 15px;
+      }
+
+      .section {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px 15px;
+        margin-bottom: 20px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+      }
+
+      .section h2 {
+        color: #1e3c72;
+        font-size: clamp(1.3em, 4vw, 1.8em);
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+        border-bottom: 3px solid #10b981;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        word-break: break-word;
+      }
+
+      .section h2::before {
+        content: "▶";
+        color: #10b981;
+        font-size: 0.8em;
+        flex-shrink: 0;
+      }
+
+      button {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: clamp(0.9em, 3vw, 1em);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        width: 100%;
+        max-width: 100%;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
       .form-group {
-        margin-bottom: 10px;
+        margin-bottom: 18px;
       }
+
       .form-group label {
         display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #1e3c72;
+        font-size: clamp(0.95em, 3vw, 1em);
       }
+
       .form-group input,
       .form-group textarea {
-        width: 90%;
-        padding: 8px;
-        border: 1px solid #ccc;
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: clamp(0.9em, 3vw, 1em);
+        transition: all 0.3s ease;
+        font-family: inherit;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .time-input-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .time-input-wrapper input {
+        width: 70px;
+        flex-shrink: 0;
+      }
+
+      .time-input-wrapper span {
+        font-weight: 600;
+        color: #6b7280;
+        flex-shrink: 0;
+      }
+
+      #tiempo_texto {
+        margin-top: 10px;
+        color: #10b981;
+        font-style: italic;
+        font-weight: 500;
+        width: 100%;
+      }
+
+      #resultados {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 15px;
+        min-height: 80px;
+        color: #374151;
+        font-size: clamp(0.9em, 2.5vw, 1em);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      #resultados h3 {
+        color: #1e3c72;
+        margin-bottom: 15px;
+        font-size: clamp(1.2em, 4vw, 1.5em);
+      }
+
+      .tramite-card {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+      }
+
+      .tramite-card:hover {
+        border-color: #2563eb;
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+      }
+
+      .tramite-card strong {
+        color: #1e3c72;
+        word-break: break-word;
+      }
+
+      .tramite-card p {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        margin: 10px 0;
+      }
+
+      .tramite-card ul {
+        list-style: none;
+        padding-left: 0;
+        margin-top: 15px;
+      }
+
+      .tramite-card ul li {
+        padding: 8px 0;
+        border-bottom: 1px solid #f3f4f6;
+        color: #4b5563;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      .tramite-card ul li:last-child {
+        border-bottom: none;
+      }
+
+      .tramite-card ul li strong {
+        color: #10b981;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .card-title {
+        flex: 1;
+        min-width: 200px;
+        word-break: break-word;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        width: 100%;
+      }
+
+      .card-actions button {
+        flex: 1;
+        min-width: 120px;
+        padding: 10px 15px;
+        font-size: clamp(0.85em, 2.5vw, 0.9em);
+      }
+
+      .btn-edit {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      }
+
+      .btn-edit:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      }
+
+      .btn-delete {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      }
+
+      .btn-delete:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      }
+
+      .btn-submit {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        padding: 14px 30px;
+        font-size: clamp(1em, 3.5vw, 1.1em);
+        margin-top: 10px;
+      }
+
+      .btn-submit:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      }
+
+      .btn-save {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #000;
+        font-weight: 700;
+      }
+
+      .btn-save:hover {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      }
+
+      .btn-cancel {
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+      }
+
+      .btn-cancel:hover {
+        background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+      }
+
+      .btn-toggle {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-toggle:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      }
+
+      .error-message {
+        color: #ef4444;
+        font-weight: bold;
+      }
+
+      .success-message {
+        color: #10b981;
+        font-weight: bold;
+      }
+
+      .loading {
+        color: #2563eb;
+        font-style: italic;
+      }
+
+      form {
+        background: white;
+        padding: 20px 15px;
+        border-radius: 12px;
+        border: 2px solid #e5e7eb;
+      }
+
+      .form-container {
+        display: none;
+        margin-top: 15px;
+        animation: slideDown 0.3s ease-out;
+      }
+
+      .form-container.active {
+        display: block;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modify-form {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 3px solid #10b981;
+      }
+
+      .modify-form h4 {
+        color: #1e3c72;
+        margin-bottom: 20px;
+        font-size: clamp(1.1em, 3.5vw, 1.3em);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+      }
+
+      .button-group button {
+        flex: 1;
+        min-width: 140px;
+      }
+
+      @media (min-width: 768px) {
+        body {
+          padding: 20px;
+        }
+
+        .content {
+          padding: 40px;
+        }
+
+        .section {
+          padding: 30px;
+        }
+
+        .section:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+          border-radius: 20px;
+        }
+
+        .header {
+          padding: 40px;
+        }
+
+        .tramite-card {
+          padding: 20px;
+        }
+
+        .tramite-card:hover {
+          transform: translateX(5px);
+        }
+
+        button {
+          width: auto;
+        }
+
+        .card-actions {
+          width: auto;
+        }
+
+        .card-actions button {
+          flex: 0;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .time-input-wrapper {
+          justify-content: flex-start;
+        }
+
+        .time-input-wrapper input {
+          width: 60px;
+        }
+
+        .card-header {
+          flex-direction: column;
+        }
+
+        .card-actions {
+          flex-direction: column;
+        }
+
+        .card-actions button {
+          width: 100%;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        .button-group button {
+          width: 100%;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>Administración de Guía de Trámites (Demo Frontend)</h1>
-    <p>
-      Esta interfaz se comunica con tu API REST en:
-      <strong id="api-url-label"></strong>
-    </p>
-
-    <hr />
-
-    <h2>1. Ver Trámites Existentes (GET /tramites)</h2>
-    <button onclick="obtenerTodos()">Obtener Todos los Trámites</button>
-
-    <hr />
-
-    <h2>2. Crear Nuevo Trámite (POST /tramites)</h2>
-    <form id="form-crear">
-      <div class="form-group">
-        <label>Título:</label><input type="text" id="titulo" required />
+    <div class="container">
+      <div class="header">
+        <h1>🗂️ Administración de Guía de Trámites</h1>
+        <p>Conectado a: <span id="api-url-label"></span></p>
       </div>
-      <div class="form-group">
-        <label>Descripción:</label
-        ><textarea id="descripcion" required></textarea>
-      </div>
-      <div class="form-group">
-        <label>Tiempo Estimado:</label>
-        <div style="display: flex; gap: 10px; align-items: center">
-          <input
-            type="number"
-            id="horas"
-            min="0"
-            placeholder="Horas"
-            style="width: 70px"
-          />
-          <span>h</span>
-          <input
-            type="number"
-            id="minutos"
-            min="0"
-            max="59"
-            placeholder="Minutos"
-            style="width: 70px"
-          />
-          <span>min</span>
+
+      <div class="content">
+        <div class="section">
+          <h2>Ver trámites existentes</h2>
+          <button onclick="obtenerTodos()">
+            📋 Obtener todos los trámites
+          </button>
         </div>
-        <p
-          id="tiempo_texto"
-          style="margin-top: 5px; color: #555; font-style: italic"
-        ></p>
 
-        <!-- Campo oculto donde se guarda la versión legible -->
-        <input
-          type="hidden"
-          id="tiempo_estimado"
-          name="tiempo_estimado"
-          required
-        />
+        <div class="section">
+          <h2>Crear nuevo trámite</h2>
+          <button class="btn-toggle" onclick="toggleFormulario()">
+            <span id="toggle-icon">➕</span>
+            <span id="toggle-text">Mostrar formulario</span>
+          </button>
+
+          <div id="form-container" class="form-container">
+            <form id="form-crear">
+              <div class="form-group">
+                <label>Título:</label>
+                <input
+                  type="text"
+                  id="titulo"
+                  required
+                  placeholder="Ingrese el título del trámite"
+                />
+              </div>
+              <div class="form-group">
+                <label>Descripción:</label>
+                <textarea
+                  id="descripcion"
+                  required
+                  placeholder="Ingrese la descripción detallada"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label>Tiempo estimado:</label>
+                <div class="time-input-wrapper">
+                  <input type="number" id="horas" min="0" placeholder="Horas" />
+                  <span>h</span>
+                  <input
+                    type="number"
+                    id="minutos"
+                    min="0"
+                    max="59"
+                    placeholder="Minutos"
+                  />
+                  <span>min</span>
+                </div>
+                <p id="tiempo_texto"></p>
+                <input
+                  type="hidden"
+                  id="tiempo_estimado"
+                  name="tiempo_estimado"
+                  required
+                />
+              </div>
+
+              <script>
+                const horasInput = document.getElementById("horas");
+                const minutosInput = document.getElementById("minutos");
+                const tiempoTexto = document.getElementById("tiempo_texto");
+                const tiempoEstimadoHidden =
+                  document.getElementById("tiempo_estimado");
+
+                function actualizarDescripcion() {
+                  const h = parseInt(horasInput.value) || 0;
+                  const m = parseInt(minutosInput.value) || 0;
+                  let texto = "";
+
+                  if (h > 0 && m > 0)
+                    texto = `${h} ${h === 1 ? "hora" : "horas"} y ${m} ${
+                      m === 1 ? "minuto" : "minutos"
+                    }`;
+                  else if (h > 0) texto = `${h} ${h === 1 ? "hora" : "horas"}`;
+                  else if (m > 0)
+                    texto = `${m} ${m === 1 ? "minuto" : "minutos"}`;
+                  else texto = "";
+
+                  tiempoTexto.textContent = texto ? `⏱️ ${texto}` : "";
+                  tiempoEstimadoHidden.value = texto;
+                }
+
+                horasInput.addEventListener("input", actualizarDescripcion);
+                minutosInput.addEventListener("input", actualizarDescripcion);
+              </script>
+
+              <div class="form-group">
+                <label>Costo:</label>
+                <input
+                  type="text"
+                  id="costo"
+                  required
+                  placeholder="Ej: $500 o Gratuito"
+                />
+              </div>
+              <div class="form-group">
+                <label>Público Objetivo:</label>
+                <input
+                  type="text"
+                  id="publico_objetivo"
+                  required
+                  placeholder="Ej: Ciudadanos mayores de 18 años"
+                />
+              </div>
+              <div class="form-group">
+                <label>Dirección:</label>
+                <input
+                  type="text"
+                  id="direccion_tramitacion"
+                  required
+                  placeholder="Dirección donde se realiza el trámite"
+                />
+              </div>
+              <button type="submit" class="btn-submit">✅ Crear trámite</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Resultados de la API</h2>
+          <div id="resultados">Esperando acción...</div>
+        </div>
       </div>
-
-      <script>
-        const horasInput = document.getElementById("horas");
-        const minutosInput = document.getElementById("minutos");
-        const tiempoTexto = document.getElementById("tiempo_texto");
-        const tiempoEstimadoHidden = document.getElementById("tiempo_estimado");
-
-        function actualizarDescripcion() {
-          const h = parseInt(horasInput.value) || 0;
-          const m = parseInt(minutosInput.value) || 0;
-          let texto = "";
-
-          // Generar texto legible
-          if (h > 0 && m > 0)
-            texto = `${h} ${h === 1 ? "hora" : "horas"} y ${m} ${
-              m === 1 ? "minuto" : "minutos"
-            }`;
-          else if (h > 0) texto = `${h} ${h === 1 ? "hora" : "horas"}`;
-          else if (m > 0) texto = `${m} ${m === 1 ? "minuto" : "minutos"}`;
-          else texto = "";
-
-          // Mostrar debajo del campo
-          tiempoTexto.textContent = texto ? `${texto}.` : "";
-
-          // Guardar texto en campo oculto
-          tiempoEstimadoHidden.value = texto;
-        }
-
-        horasInput.addEventListener("input", actualizarDescripcion);
-        minutosInput.addEventListener("input", actualizarDescripcion);
-      </script>
-
-      <div class="form-group">
-        <label>Costo:</label><input type="text" id="costo" required />
-      </div>
-      <div class="form-group">
-        <label>Público Objetivo:</label
-        ><input type="text" id="publico_objetivo" required />
-      </div>
-      <div class="form-group">
-        <label>Dirección:</label
-        ><input type="text" id="direccion_tramitacion" required />
-      </div>
-      <button type="submit">Crear Trámite</button>
-    </form>
-
-    <hr />
-
-    <h2>Resultados de la API:</h2>
-    <div id="resultados">Esperando acción...</div>
+    </div>
 
     <script>
-      // 🔧 Detectar entorno automáticamente
       const API_URL =
         window.location.hostname.includes("localhost") ||
         window.location.hostname.includes("127.0.0.1")
@@ -165,17 +616,32 @@
 
       const resultadosDiv = document.getElementById("resultados");
 
+      function toggleFormulario() {
+        const formContainer = document.getElementById("form-container");
+        const toggleIcon = document.getElementById("toggle-icon");
+        const toggleText = document.getElementById("toggle-text");
+
+        if (formContainer.classList.contains("active")) {
+          formContainer.classList.remove("active");
+          toggleIcon.textContent = "➕";
+          toggleText.textContent = "Mostrar Formulario";
+        } else {
+          formContainer.classList.add("active");
+          toggleIcon.textContent = "➖";
+          toggleText.textContent = "Ocultar Formulario";
+        }
+      }
+
       function mostrarResultado(contenido, esError = false) {
         resultadosDiv.innerHTML = esError
-          ? `<span style="color: red; font-weight: bold;">ERROR:</span> ${contenido}`
+          ? `<span class="error-message">❌ ERROR:</span> ${contenido}`
           : contenido;
       }
 
-      // ------------------------------------------------------------------
-      // GET: Obtener y mostrar todos los trámites
-      // ------------------------------------------------------------------
       async function obtenerTodos() {
-        mostrarResultado("Cargando trámites...");
+        mostrarResultado(
+          '<span class="loading">⏳ Cargando trámites...</span>'
+        );
         try {
           const response = await fetch(API_URL);
           const data = await response.json();
@@ -188,38 +654,42 @@
             );
 
           if (data.length === 0) {
-            mostrarResultado("No hay trámites cargados.");
+            mostrarResultado("📭 No hay trámites cargados.");
             return;
           }
 
-          let html = "<h3>Trámites Encontrados:</h3>";
+          let html = "<h3>✅ Trámites Encontrados:</h3>";
           data.forEach((tramite) => {
             html += `
               <div class="tramite-card" id="card-${tramite.id}">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <strong>ID: ${tramite.id}</strong> - <strong>${
+                <div class="card-header">
+                  <div class="card-title">
+                    <strong>ID: ${tramite.id}</strong> - <strong>${
               tramite.titulo
             }</strong>
-                  <div>
-                    <button onclick="prepararModificacion(${
-                      tramite.id
-                    })" style="background-color: #2196F3; color: white;">Modificar</button>
-                    <button onclick="eliminarTramite(${
-                      tramite.id
-                    })" style="background-color: #f44336; color: white;">Eliminar</button>
                   </div>
                 </div>
-                <p>Descripción: ${tramite.descripcion}</p>
+                <p>${tramite.descripcion}</p>
                 <ul>
-                  <li>Tiempo: ${tramite.tiempo_estimado || "N/A"}</li>
-                  <li>Costo: ${tramite.costo || "N/A"}</li>
-                  <li>Público Objetivo: ${
+                  <li>⏱️ <strong>Tiempo:</strong> ${
+                    tramite.tiempo_estimado || "N/A"
+                  }</li>
+                  <li>💰 <strong>Costo:</strong> ${tramite.costo || "N/A"}</li>
+                  <li>👥 <strong>Público Objetivo:</strong> ${
                     tramite.publico_objetivo || "N/A"
                   }</li>
-                  <li><strong>Dirección:</strong> ${
+                  <li>📍 <strong>Dirección:</strong> ${
                     tramite.direccion_tramitacion || "N/A"
                   }</li>
                 </ul>
+                <div class="card-actions">
+                  <button onclick="prepararModificacion(${
+                    tramite.id
+                  })" class="btn-edit">✏️ Modificar</button>
+                  <button onclick="eliminarTramite(${
+                    tramite.id
+                  })" class="btn-delete">🗑️ Eliminar</button>
+                </div>
                 <div id="modificar-form-${tramite.id}"></div>
               </div>`;
           });
@@ -229,9 +699,6 @@
         }
       }
 
-      // ------------------------------------------------------------------
-      // POST: Crear un nuevo trámite
-      // ------------------------------------------------------------------
       document
         .getElementById("form-crear")
         .addEventListener("submit", async (e) => {
@@ -247,7 +714,9 @@
             ).value,
           };
 
-          mostrarResultado("Enviando nuevo trámite...");
+          mostrarResultado(
+            '<span class="loading">📤 Enviando nuevo trámite...</span>'
+          );
 
           try {
             const response = await fetch(API_URL, {
@@ -260,9 +729,11 @@
 
             if (response.status === 201) {
               mostrarResultado(
-                `Trámite creado exitosamente (ID: <strong>${data.id}</strong>).`
+                `<span class="success-message">✅ Trámite creado exitosamente (ID: <strong>${data.id}</strong>).</span>`
               );
               document.getElementById("form-crear").reset();
+              document.getElementById("tiempo_texto").textContent = "";
+              toggleFormulario();
               obtenerTodos();
             } else {
               throw new Error(
@@ -274,19 +745,20 @@
           }
         });
 
-      // ------------------------------------------------------------------
-      // DELETE: Eliminar trámite
-      // ------------------------------------------------------------------
       async function eliminarTramite(id) {
         if (!confirm(`¿Eliminar el trámite con ID ${id}?`)) return;
-        mostrarResultado(`Eliminando trámite ${id}...`);
+        mostrarResultado(
+          `<span class="loading">🗑️ Eliminando trámite ${id}...</span>`
+        );
 
         try {
           const response = await fetch(`${API_URL}/${id}`, {
             method: "DELETE",
           });
           if (response.status === 204) {
-            mostrarResultado(`Trámite con ID ${id} eliminado.`);
+            mostrarResultado(
+              `<span class="success-message">✅ Trámite con ID ${id} eliminado.</span>`
+            );
             obtenerTodos();
           } else {
             const data = await response.json();
@@ -299,27 +771,102 @@
         }
       }
 
-      // ------------------------------------------------------------------
-      // PUT: Modificar trámite
-      // ------------------------------------------------------------------
       async function prepararModificacion(id) {
         const response = await fetch(`${API_URL}/${id}`);
         const tramite = await response.json();
 
         const formContainer = document.getElementById(`modificar-form-${id}`);
+
+        let horas = 0;
+        let minutos = 0;
+        const texto = tramite.tiempo_estimado?.toLowerCase() || "";
+
+        const matchHoras = texto.match(/(\d+)\s*hora/);
+        const matchMinutos = texto.match(/(\d+)\s*minuto/);
+
+        if (matchHoras) horas = parseInt(matchHoras[1]);
+        if (matchMinutos) minutos = parseInt(matchMinutos[1]);
+
         formContainer.innerHTML = `
-          <br><h4>Modificar Trámite ID ${id}:</h4>
-          <form id="form-modificar-${id}" onsubmit="modificarTramite(event, ${id})">
-            <div class="form-group"><label>Título:</label><input type="text" id="mod-titulo-${id}" value="${tramite.titulo}" required></div>
-            <div class="form-group"><label>Descripción:</label><textarea id="mod-descripcion-${id}">${tramite.descripcion}</textarea></div>
-            <div class="form-group"><label>Tiempo Estimado:</label><input type="text" id="mod-tiempo-${id}" value="${tramite.tiempo_estimado}"></div>
-            <div class="form-group"><label>Costo:</label><input type="text" id="mod-costo-${id}" value="${tramite.costo}"></div>
-            <div class="form-group"><label>Público Objetivo:</label><input type="text" id="mod-publico-${id}" value="${tramite.publico_objetivo}"></div>
-            <div class="form-group"><label>Dirección:</label><input type="text" id="mod-direccion-${id}" value="${tramite.direccion_tramitacion}"></div>
-            <button type="submit" style="background-color:#FFC107;color:black;">Guardar Cambios</button>
-            <button type="button" onclick="document.getElementById('modificar-form-${id}').innerHTML=''">Cancelar</button>
-          </form>
+          <div class="modify-form">
+            <h4>✏️ Modificar Trámite ID ${id}</h4>
+            <form id="form-modificar-${id}" onsubmit="modificarTramite(event, ${id})">
+              <div class="form-group">
+                <label>Título:</label>
+                <input type="text" id="mod-titulo-${id}" value="${
+          tramite.titulo
+        }" required>
+              </div>
+              <div class="form-group">
+                <label>Descripción:</label>
+                <textarea id="mod-descripcion-${id}">${
+          tramite.descripcion
+        }</textarea>
+              </div>
+              <div class="form-group">
+                <label>Tiempo Estimado:</label>
+                <div class="time-input-wrapper">
+                  <input type="number" id="mod-horas-${id}" min="0" value="${horas}" />
+                  <span>h</span>
+                  <input type="number" id="mod-minutos-${id}" min="0" max="59" value="${minutos}" />
+                  <span>min</span>
+                </div>
+                <p id="mod-tiempo-texto-${id}"></p>
+                <input type="hidden" id="mod-tiempo-${id}" value="${
+          tramite.tiempo_estimado || ""
+        }">
+              </div>
+              <div class="form-group">
+                <label>Costo:</label>
+                <input type="text" id="mod-costo-${id}" value="${
+          tramite.costo
+        }">
+              </div>
+              <div class="form-group">
+                <label>Público Objetivo:</label>
+                <input type="text" id="mod-publico-${id}" value="${
+          tramite.publico_objetivo
+        }">
+              </div>
+              <div class="form-group">
+                <label>Dirección:</label>
+                <input type="text" id="mod-direccion-${id}" value="${
+          tramite.direccion_tramitacion
+        }">
+              </div>
+              <div class="button-group">
+                <button type="submit" class="btn-save">💾 Guardar Cambios</button>
+                <button type="button" onclick="document.getElementById('modificar-form-${id}').innerHTML=''" class="btn-cancel">❌ Cancelar</button>
+              </div>
+            </form>
+          </div>
         `;
+
+        const horasInput = document.getElementById(`mod-horas-${id}`);
+        const minutosInput = document.getElementById(`mod-minutos-${id}`);
+        const tiempoTexto = document.getElementById(`mod-tiempo-texto-${id}`);
+        const tiempoHidden = document.getElementById(`mod-tiempo-${id}`);
+
+        function actualizarDescripcion() {
+          const h = parseInt(horasInput.value) || 0;
+          const m = parseInt(minutosInput.value) || 0;
+          let texto = "";
+
+          if (h > 0 && m > 0)
+            texto = `${h} ${h === 1 ? "hora" : "horas"} y ${m} ${
+              m === 1 ? "minuto" : "minutos"
+            }`;
+          else if (h > 0) texto = `${h} ${h === 1 ? "hora" : "horas"}`;
+          else if (m > 0) texto = `${m} ${m === 1 ? "minuto" : "minutos"}`;
+          else texto = "";
+
+          tiempoTexto.textContent = texto ? `⏱️ ${texto}` : "";
+          tiempoHidden.value = texto;
+        }
+
+        horasInput.addEventListener("input", actualizarDescripcion);
+        minutosInput.addEventListener("input", actualizarDescripcion);
+        actualizarDescripcion();
       }
 
       async function modificarTramite(e, id) {
@@ -334,7 +881,9 @@
             .value,
         };
 
-        mostrarResultado(`Guardando cambios para ID ${id}...`);
+        mostrarResultado(
+          `<span class="loading">💾 Guardando cambios para ID ${id}...</span>`
+        );
 
         try {
           const response = await fetch(`${API_URL}/${id}`, {
@@ -344,7 +893,9 @@
           });
           const data = await response.json();
           if (response.ok) {
-            mostrarResultado(`Trámite ID ${id} modificado exitosamente.`);
+            mostrarResultado(
+              `<span class="success-message">✅ Trámite ID ${id} modificado exitosamente.</span>`
+            );
             obtenerTodos();
           } else {
             throw new Error(`Fallo: ${data.error || JSON.stringify(data)}`);
