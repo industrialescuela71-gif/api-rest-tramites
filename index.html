@@ -3,8 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guía de Trámites - DEMO API</title>
+    <title>Guía de Trámites - Administración Municipal</title>
+    <!-- Importar Font Awesome para íconos -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <style>
+      /* --- Paleta de Colores Profesional --- */
+      :root {
+        --color-azul-principal: #004a99; /* Azul municipal oscuro */
+        --color-azul-secundario: #007bff; /* Azul primario para acciones */
+        --color-verde: #28a745; /* Verde para éxito */
+        --color-rojo: #dc3545; /* Rojo para peligro/eliminar */
+        --color-amarillo: #ffc107; /* Amarillo para advertencia/editar */
+        --color-gris: #6c757d; /* Gris para acciones secundarias */
+        --color-blanco: #ffffff;
+        --color-fondo: #f8f9fa; /* Un gris muy claro para el fondo */
+        --color-texto-principal: #343a40;
+        --color-texto-secundario: #6c757d;
+        --color-borde: #dee2e6;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -12,47 +35,51 @@
       }
 
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background-color: var(--color-fondo);
         min-height: 100vh;
         padding: 10px;
-        color: #333;
+        color: var(--color-texto-principal);
       }
 
       .container {
         max-width: 1200px;
         margin: 0 auto;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        background: var(--color-blanco);
+        border-radius: 8px; /* Bordes más sutiles */
+        border: 1px solid var(--color-borde);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra muy suave */
         overflow: hidden;
       }
 
       .header {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        color: white;
+        background: var(--color-azul-principal); /* Color sólido */
+        color: var(--color-blanco);
         padding: 25px 20px;
         text-align: center;
       }
 
       .header h1 {
-        font-size: clamp(1.5em, 5vw, 2.5em);
+        font-size: clamp(1.5em, 5vw, 2.2em);
         margin-bottom: 10px;
         font-weight: 600;
-        letter-spacing: -0.5px;
-        line-height: 1.2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
       }
 
       .header p {
-        font-size: clamp(0.9em, 3vw, 1.1em);
-        opacity: 0.95;
+        font-size: clamp(0.9em, 3vw, 1em);
+        opacity: 0.9;
         word-break: break-all;
       }
 
       #api-url-label {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1); /* Más sutil */
         padding: 5px 12px;
-        border-radius: 15px;
+        border-radius: 8px;
         display: inline-block;
         margin-top: 8px;
         font-weight: 500;
@@ -64,56 +91,56 @@
       }
 
       .section {
-        background: #f8f9fa;
-        border-radius: 12px;
+        background: var(--color-blanco);
+        border-radius: 8px;
         padding: 20px 15px;
         margin-bottom: 20px;
-        border: 2px solid #e9ecef;
-        transition: all 0.3s ease;
+        border: 1px solid var(--color-borde);
+        /* Se eliminan transiciones y sombras al hover */
       }
 
       .section h2 {
-        color: #1e3c72;
+        color: var(--color-azul-principal);
         font-size: clamp(1.3em, 4vw, 1.8em);
         margin-bottom: 15px;
         padding-bottom: 12px;
-        border-bottom: 3px solid #10b981;
+        border-bottom: 1px solid var(--color-borde); /* Borde sutil */
         display: flex;
         align-items: center;
         gap: 8px;
         word-break: break-word;
       }
 
-      .section h2::before {
-        content: "▶";
-        color: #10b981;
-        font-size: 0.8em;
-        flex-shrink: 0;
-      }
+      /* Se elimina el ::before "▶" */
 
+      /* --- Estilo Base de Botones --- */
       button {
-        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-        color: white;
-        border: none;
-        padding: 12px 24px;
+        background: var(--color-azul-secundario);
+        color: var(--color-blanco);
+        border: 1px solid var(--color-azul-secundario);
+        padding: 10px 20px;
         font-size: clamp(0.9em, 3vw, 1em);
-        border-radius: 10px;
+        border-radius: 8px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 600;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        transition: background-color 0.2s ease, border-color 0.2s ease; /* Transición simple */
+        font-weight: 500;
+        box-shadow: none; /* Sin sombra */
         width: 100%;
-        max-width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
       }
 
       button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-        background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+        background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+        border-color: #0056b3;
+        transform: none; /* Sin transformaciones */
+        box-shadow: none;
       }
 
       button:active {
-        transform: translateY(0);
+        transform: none;
       }
 
       .form-group {
@@ -124,7 +151,7 @@
         display: block;
         margin-bottom: 8px;
         font-weight: 600;
-        color: #1e3c72;
+        color: var(--color-texto-principal);
         font-size: clamp(0.95em, 3vw, 1em);
       }
 
@@ -132,18 +159,18 @@
       .form-group textarea {
         width: 100%;
         padding: 12px 15px;
-        border: 2px solid #e5e7eb;
-        border-radius: 10px;
+        border: 1px solid var(--color-borde); /* Borde más fino */
+        border-radius: 8px; /* Radio consistente */
         font-size: clamp(0.9em, 3vw, 1em);
-        transition: all 0.3s ease;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
         font-family: inherit;
       }
 
       .form-group input:focus,
       .form-group textarea:focus {
         outline: none;
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        border-color: var(--color-azul-secundario);
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Foco limpio */
       }
 
       .form-group textarea {
@@ -165,52 +192,58 @@
 
       .time-input-wrapper span {
         font-weight: 600;
-        color: #6b7280;
+        color: var(--color-texto-secundario);
         flex-shrink: 0;
       }
 
       #tiempo_texto {
         margin-top: 10px;
-        color: #10b981;
+        color: var(--color-texto-secundario); /* Color más sobrio */
         font-style: italic;
         font-weight: 500;
         width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       #resultados {
-        background: white;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
+        background: var(--color-blanco);
+        border: 1px solid var(--color-borde);
+        border-radius: 8px;
         padding: 15px;
         min-height: 80px;
-        color: #374151;
+        color: var(--color-texto-principal);
         font-size: clamp(0.9em, 2.5vw, 1em);
         word-wrap: break-word;
         overflow-wrap: break-word;
       }
 
       #resultados h3 {
-        color: #1e3c72;
+        color: var(--color-azul-principal);
         margin-bottom: 15px;
         font-size: clamp(1.2em, 4vw, 1.5em);
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .tramite-card {
-        background: white;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
+        background: var(--color-blanco);
+        border: 1px solid var(--color-borde);
+        border-radius: 8px;
         padding: 15px;
         margin-bottom: 15px;
-        transition: all 0.3s ease;
+        transition: border-color 0.2s ease; /* Transición simple */
       }
 
       .tramite-card:hover {
-        border-color: #2563eb;
-        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+        border-color: var(--color-azul-secundario);
+        box-shadow: none;
       }
 
       .tramite-card strong {
-        color: #1e3c72;
+        color: var(--color-texto-principal);
         word-break: break-word;
       }
 
@@ -218,6 +251,7 @@
         word-wrap: break-word;
         overflow-wrap: break-word;
         margin: 10px 0;
+        color: var(--color-texto-secundario);
       }
 
       .tramite-card ul {
@@ -229,9 +263,18 @@
       .tramite-card ul li {
         padding: 8px 0;
         border-bottom: 1px solid #f3f4f6;
-        color: #4b5563;
+        color: var(--color-texto-secundario);
         word-wrap: break-word;
         overflow-wrap: break-word;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .tramite-card ul li .icon {
+        color: var(--color-azul-principal); /* Iconos en azul */
+        width: 20px;
+        text-align: center;
       }
 
       .tramite-card ul li:last-child {
@@ -239,7 +282,7 @@
       }
 
       .tramite-card ul li strong {
-        color: #10b981;
+        color: var(--color-texto-principal); /* Fuerte pero no verde */
       }
 
       .card-header {
@@ -255,6 +298,7 @@
         flex: 1;
         min-width: 200px;
         word-break: break-word;
+        font-size: 1.1em;
       }
 
       .card-actions {
@@ -267,87 +311,94 @@
       .card-actions button {
         flex: 1;
         min-width: 120px;
-        padding: 10px 15px;
+        padding: 8px 12px;
         font-size: clamp(0.85em, 2.5vw, 0.9em);
       }
 
-      .btn-edit {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      /* --- Colores Específicos de Botones --- */
+      .btn-edit,
+      .btn-save {
+        background: var(--color-amarillo);
+        border-color: var(--color-amarillo);
+        color: var(--color-texto-principal);
       }
-
-      .btn-edit:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      .btn-edit:hover,
+      .btn-save:hover {
+        background: #e0a800;
+        border-color: #e0a800;
       }
 
       .btn-delete {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        background: var(--color-rojo);
+        border-color: var(--color-rojo);
+        color: var(--color-blanco);
       }
-
       .btn-delete:hover {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        background: #c82333;
+        border-color: #c82333;
       }
 
       .btn-submit {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        padding: 14px 30px;
+        background: var(--color-verde);
+        border-color: var(--color-verde);
+        color: var(--color-blanco);
+        padding: 12px 30px;
         font-size: clamp(1em, 3.5vw, 1.1em);
         margin-top: 10px;
       }
-
       .btn-submit:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
-      }
-
-      .btn-save {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: #000;
-        font-weight: 700;
-      }
-
-      .btn-save:hover {
-        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        background: #218838;
+        border-color: #218838;
       }
 
       .btn-cancel {
-        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        background: var(--color-gris);
+        border-color: var(--color-gris);
+        color: var(--color-blanco);
       }
-
       .btn-cancel:hover {
-        background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+        background: #5a6268;
+        border-color: #5a6268;
       }
 
       .btn-toggle {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+        background: var(--color-azul-secundario);
+        border-color: var(--color-azul-secundario);
       }
-
       .btn-toggle:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        background: #0056b3;
+        border-color: #0056b3;
       }
 
       .error-message {
-        color: #ef4444;
+        color: var(--color-rojo);
         font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .success-message {
-        color: #10b981;
+        color: var(--color-verde);
         font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .loading {
-        color: #2563eb;
+        color: var(--color-azul-secundario);
         font-style: italic;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       form {
-        background: white;
+        background: var(--color-blanco);
         padding: 20px 15px;
-        border-radius: 12px;
-        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        border: 1px solid var(--color-borde);
       }
 
       .form-container {
@@ -374,13 +425,16 @@
       .modify-form {
         margin-top: 20px;
         padding-top: 20px;
-        border-top: 3px solid #10b981;
+        border-top: 1px solid var(--color-verde);
       }
 
       .modify-form h4 {
-        color: #1e3c72;
+        color: var(--color-azul-principal);
         margin-bottom: 20px;
         font-size: clamp(1.1em, 3.5vw, 1.3em);
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .button-group {
@@ -408,13 +462,8 @@
           padding: 30px;
         }
 
-        .section:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
         .container {
-          border-radius: 20px;
+          border-radius: 12px;
         }
 
         .header {
@@ -425,12 +474,8 @@
           padding: 20px;
         }
 
-        .tramite-card:hover {
-          transform: translateX(5px);
-        }
-
         button {
-          width: auto;
+          width: auto; /* Botones no ocupan 100% en desktop */
         }
 
         .card-actions {
@@ -476,22 +521,32 @@
   <body>
     <div class="container">
       <div class="header">
-        <h1>🗂️ Administración de Guía de Trámites</h1>
+        <h1>
+          <i class="fa-solid fa-folder-open"></i>
+          Administración de Guía de Trámites
+        </h1>
         <p>Conectado a: <span id="api-url-label"></span></p>
       </div>
 
       <div class="content">
         <div class="section">
-          <h2>Ver trámites existentes</h2>
+          <h2>
+            <i class="fa-solid fa-list-check"></i>
+            Ver trámites existentes
+          </h2>
           <button onclick="obtenerTodos()">
-            📋 Obtener todos los trámites
+            <i class="fa-solid fa-sync"></i>
+            Obtener todos los trámites
           </button>
         </div>
 
         <div class="section">
-          <h2>Crear nuevo trámite</h2>
+          <h2>
+            <i class="fa-solid fa-plus-circle"></i>
+            Crear nuevo trámite
+          </h2>
           <button class="btn-toggle" onclick="toggleFormulario()">
-            <span id="toggle-icon">➕</span>
+            <i id="toggle-icon" class="fa-solid fa-plus"></i>
             <span id="toggle-text">Mostrar formulario</span>
           </button>
 
@@ -558,7 +613,10 @@
                     texto = `${m} ${m === 1 ? "minuto" : "minutos"}`;
                   else texto = "";
 
-                  tiempoTexto.textContent = texto ? `⏱️ ${texto}` : "";
+                  // Usar innerHTML para renderizar el ícono
+                  tiempoTexto.innerHTML = texto
+                    ? `<i class="fa-solid fa-clock"></i> ${texto}`
+                    : "";
                   tiempoEstimadoHidden.value = texto;
                 }
 
@@ -593,13 +651,19 @@
                   placeholder="Dirección donde se realiza el trámite"
                 />
               </div>
-              <button type="submit" class="btn-submit">✅ Crear trámite</button>
+              <button type="submit" class="btn-submit">
+                <i class="fa-solid fa-check"></i>
+                Crear trámite
+              </button>
             </form>
           </div>
         </div>
 
         <div class="section">
-          <h2>Resultados de la API</h2>
+          <h2>
+            <i class="fa-solid fa-chart-bar"></i>
+            Resultados de la API
+          </h2>
           <div id="resultados">Esperando acción...</div>
         </div>
       </div>
@@ -607,6 +671,9 @@
 
     <script>
       function escapeHtml(text) {
+        if (text === null || text === undefined) {
+          return "";
+        }
         const map = {
           "&": "&amp;",
           "<": "&lt;",
@@ -614,7 +681,7 @@
           '"': "&quot;",
           "'": "&#039;",
         };
-        return text.replace(/[&<>"']/g, (m) => map[m]);
+        return text.toString().replace(/[&<>"']/g, (m) => map[m]);
       }
       const API_URL =
         window.location.hostname.includes("localhost") ||
@@ -633,24 +700,24 @@
 
         if (formContainer.classList.contains("active")) {
           formContainer.classList.remove("active");
-          toggleIcon.textContent = "➕";
+          toggleIcon.className = "fa-solid fa-plus"; // Cambiar clase de ícono
           toggleText.textContent = "Mostrar Formulario";
         } else {
           formContainer.classList.add("active");
-          toggleIcon.textContent = "➖";
+          toggleIcon.className = "fa-solid fa-minus"; // Cambiar clase de ícono
           toggleText.textContent = "Ocultar Formulario";
         }
       }
 
       function mostrarResultado(contenido, esError = false) {
         resultadosDiv.innerHTML = esError
-          ? `<span class="error-message">❌ ERROR:</span> ${contenido}`
+          ? `<span class="error-message"><i class="fa-solid fa-exclamation-circle"></i> ERROR:</span> ${contenido}`
           : contenido;
       }
 
       async function obtenerTodos() {
         mostrarResultado(
-          '<span class="loading">⏳ Cargando trámites...</span>'
+          '<span class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Cargando trámites...</span>'
         );
         try {
           const response = await fetch(API_URL);
@@ -664,11 +731,14 @@
             );
 
           if (data.length === 0) {
-            mostrarResultado("📭 No hay trámites cargados.");
+            mostrarResultado(
+              '<i class="fa-solid fa-inbox"></i> No hay trámites cargados.'
+            );
             return;
           }
 
-          let html = "<h3>✅ Trámites Encontrados:</h3>";
+          let html =
+            '<h3><i class="fa-solid fa-check-circle"></i> Trámites Encontrados:</h3>';
           data.forEach((tramite) => {
             // Escapamos SOLO los datos del usuario, NO el HTML de estructura
             html += `
@@ -682,26 +752,30 @@
                 </div>
                 <p>${escapeHtml(tramite.descripcion)}</p>
                 <ul>
-                  <li>⏱️ <strong>Tiempo:</strong> ${escapeHtml(
+                  <li><i class="fa-solid fa-clock icon"></i> <strong>Tiempo:</strong> ${escapeHtml(
                     tramite.tiempo_estimado || "N/A"
                   )}</li>
-                  <li>💰 <strong>Costo:</strong> ${escapeHtml(
+                  <li><i class="fa-solid fa-coins icon"></i> <strong>Costo:</strong> ${escapeHtml(
                     tramite.costo || "N/A"
                   )}</li>
-                  <li>👥 <strong>Público Objetivo:</strong> ${escapeHtml(
+                  <li><i class="fa-solid fa-users icon"></i> <strong>Público Objetivo:</strong> ${escapeHtml(
                     tramite.publico_objetivo || "N/A"
                   )}</li>
-                  <li>📍 <strong>Dirección:</strong> ${escapeHtml(
+                  <li><i class="fa-solid fa-map-marker-alt icon"></i> <strong>Dirección:</strong> ${escapeHtml(
                     tramite.direccion_tramitacion || "N/A"
                   )}</li>
                 </ul>
                 <div class="card-actions">
                   <button onclick="prepararModificacion(${
                     tramite.id
-                  })" class="btn-edit">✏️ Modificar</button>
+                  })" class="btn-edit">
+                    <i class="fa-solid fa-pencil"></i> Modificar
+                  </button>
                   <button onclick="eliminarTramite(${
                     tramite.id
-                  })" class="btn-delete">🗑️ Eliminar</button>
+                  })" class="btn-delete">
+                    <i class="fa-solid fa-trash"></i> Eliminar
+                  </button>
                 </div>
                 <div id="modificar-form-${tramite.id}"></div>
               </div>`;
@@ -728,7 +802,7 @@
           };
 
           mostrarResultado(
-            '<span class="loading">📤 Enviando nuevo trámite...</span>'
+            '<span class="loading"><i class="fa-solid fa-paper-plane"></i> Enviando nuevo trámite...</span>'
           );
 
           try {
@@ -742,10 +816,10 @@
 
             if (response.status === 201) {
               mostrarResultado(
-                `<span class="success-message">✅ Trámite creado exitosamente (ID: <strong>${data.id}</strong>).</span>`
+                `<span class="success-message"><i class="fa-solid fa-check-circle"></i> Trámite creado exitosamente (ID: <strong>${data.id}</strong>).</span>`
               );
               document.getElementById("form-crear").reset();
-              document.getElementById("tiempo_texto").textContent = "";
+              document.getElementById("tiempo_texto").innerHTML = ""; // Limpiar innerHTML
               toggleFormulario();
               obtenerTodos();
             } else {
@@ -759,9 +833,15 @@
         });
 
       async function eliminarTramite(id) {
-        if (!confirm(`¿Eliminar el trámite con ID ${id}?`)) return;
+        // Reemplazar confirm() por una solución modal en un futuro.
+        // Por ahora, lo mantenemos para funcionalidad.
+        if (
+          !window.confirm(`¿Está seguro de eliminar el trámite con ID ${id}?`)
+        )
+          return;
+
         mostrarResultado(
-          `<span class="loading">🗑️ Eliminando trámite ${id}...</span>`
+          `<span class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Eliminando trámite ${id}...</span>`
         );
 
         try {
@@ -770,7 +850,7 @@
           });
           if (response.status === 204) {
             mostrarResultado(
-              `<span class="success-message">✅ Trámite con ID ${id} eliminado.</span>`
+              `<span class="success-message"><i class="fa-solid fa-check-circle"></i> Trámite con ID ${id} eliminado.</span>`
             );
             obtenerTodos();
           } else {
@@ -802,7 +882,7 @@
 
         formContainer.innerHTML = `
           <div class="modify-form">
-            <h4>✏️ Modificar Trámite ID ${id}</h4>
+            <h4><i class="fa-solid fa-pencil"></i> Modificar Trámite ID ${id}</h4>
             <form id="form-modificar-${id}" onsubmit="modificarTramite(event, ${id})">
               <div class="form-group">
                 <label>Título:</label>
@@ -848,20 +928,24 @@
         )}">
               </div>
               <div class="button-group">
-                <button type="submit" class="btn-save">💾 Guardar Cambios</button>
-                <button type="button" onclick="document.getElementById('modificar-form-${id}').innerHTML=''" class="btn-cancel">❌ Cancelar</button>
+                <button type="submit" class="btn-save">
+                  <i class="fa-solid fa-save"></i> Guardar Cambios
+                </button>
+                <button type="button" onclick="document.getElementById('modificar-form-${id}').innerHTML=''" class="btn-cancel">
+                  <i class="fa-solid fa-times"></i> Cancelar
+                </button>
               </div>
             </form>
           </div>
         `;
 
-        // El resto del código de los event listeners se mantiene igual...
+        // Añadir listeners para el formulario dinámico de modificación
         const horasInput = document.getElementById(`mod-horas-${id}`);
         const minutosInput = document.getElementById(`mod-minutos-${id}`);
         const tiempoTexto = document.getElementById(`mod-tiempo-texto-${id}`);
         const tiempoHidden = document.getElementById(`mod-tiempo-${id}`);
 
-        function actualizarDescripcion() {
+        function actualizarDescripcionMod() {
           const h = parseInt(horasInput.value) || 0;
           const m = parseInt(minutosInput.value) || 0;
           let texto = "";
@@ -874,13 +958,15 @@
           else if (m > 0) texto = `${m} ${m === 1 ? "minuto" : "minutos"}`;
           else texto = "";
 
-          tiempoTexto.textContent = texto ? `⏱️ ${texto}` : "";
+          tiempoTexto.innerHTML = texto
+            ? `<i class="fa-solid fa-clock"></i> ${texto}`
+            : "";
           tiempoHidden.value = texto;
         }
 
-        horasInput.addEventListener("input", actualizarDescripcion);
-        minutosInput.addEventListener("input", actualizarDescripcion);
-        actualizarDescripcion();
+        horasInput.addEventListener("input", actualizarDescripcionMod);
+        minutosInput.addEventListener("input", actualizarDescripcionMod);
+        actualizarDescripcionMod(); // Llamada inicial
       }
 
       async function modificarTramite(e, id) {
@@ -896,7 +982,7 @@
         };
 
         mostrarResultado(
-          `<span class="loading">💾 Guardando cambios para ID ${id}...</span>`
+          `<span class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Guardando cambios para ID ${id}...</span>`
         );
 
         try {
@@ -908,7 +994,7 @@
           const data = await response.json();
           if (response.ok) {
             mostrarResultado(
-              `<span class="success-message">✅ Trámite ID ${id} modificado exitosamente.</span>`
+              `<span class="success-message"><i class="fa-solid fa-check-circle"></i> Trámite ID ${id} modificado exitosamente.</span>`
             );
             obtenerTodos();
           } else {
