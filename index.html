@@ -606,6 +606,16 @@
     </div>
 
     <script>
+      function escapeHtml(text) {
+        const map = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;",
+        };
+        return text.replace(/[&<>"']/g, (m) => map[m]);
+      }
       const API_URL =
         window.location.hostname.includes("localhost") ||
         window.location.hostname.includes("127.0.0.1")
@@ -660,27 +670,30 @@
 
           let html = "<h3>✅ Trámites Encontrados:</h3>";
           data.forEach((tramite) => {
+            // Escapamos SOLO los datos del usuario, NO el HTML de estructura
             html += `
               <div class="tramite-card" id="card-${tramite.id}">
                 <div class="card-header">
                   <div class="card-title">
-                    <strong>ID: ${tramite.id}</strong> - <strong>${
+                    <strong>ID: ${tramite.id}</strong> - <strong>${escapeHtml(
               tramite.titulo
-            }</strong>
+            )}</strong>
                   </div>
                 </div>
-                <p>${tramite.descripcion}</p>
+                <p>${escapeHtml(tramite.descripcion)}</p>
                 <ul>
-                  <li>⏱️ <strong>Tiempo:</strong> ${
+                  <li>⏱️ <strong>Tiempo:</strong> ${escapeHtml(
                     tramite.tiempo_estimado || "N/A"
-                  }</li>
-                  <li>💰 <strong>Costo:</strong> ${tramite.costo || "N/A"}</li>
-                  <li>👥 <strong>Público Objetivo:</strong> ${
+                  )}</li>
+                  <li>💰 <strong>Costo:</strong> ${escapeHtml(
+                    tramite.costo || "N/A"
+                  )}</li>
+                  <li>👥 <strong>Público Objetivo:</strong> ${escapeHtml(
                     tramite.publico_objetivo || "N/A"
-                  }</li>
-                  <li>📍 <strong>Dirección:</strong> ${
+                  )}</li>
+                  <li>📍 <strong>Dirección:</strong> ${escapeHtml(
                     tramite.direccion_tramitacion || "N/A"
-                  }</li>
+                  )}</li>
                 </ul>
                 <div class="card-actions">
                   <button onclick="prepararModificacion(${
@@ -793,15 +806,15 @@
             <form id="form-modificar-${id}" onsubmit="modificarTramite(event, ${id})">
               <div class="form-group">
                 <label>Título:</label>
-                <input type="text" id="mod-titulo-${id}" value="${
+                <input type="text" id="mod-titulo-${id}" value="${escapeHtml(
           tramite.titulo
-        }" required>
+        )}" required>
               </div>
               <div class="form-group">
                 <label>Descripción:</label>
-                <textarea id="mod-descripcion-${id}">${
+                <textarea id="mod-descripcion-${id}">${escapeHtml(
           tramite.descripcion
-        }</textarea>
+        )}</textarea>
               </div>
               <div class="form-group">
                 <label>Tiempo Estimado:</label>
@@ -812,27 +825,27 @@
                   <span>min</span>
                 </div>
                 <p id="mod-tiempo-texto-${id}"></p>
-                <input type="hidden" id="mod-tiempo-${id}" value="${
+                <input type="hidden" id="mod-tiempo-${id}" value="${escapeHtml(
           tramite.tiempo_estimado || ""
-        }">
+        )}">
               </div>
               <div class="form-group">
                 <label>Costo:</label>
-                <input type="text" id="mod-costo-${id}" value="${
+                <input type="text" id="mod-costo-${id}" value="${escapeHtml(
           tramite.costo
-        }">
+        )}">
               </div>
               <div class="form-group">
                 <label>Público Objetivo:</label>
-                <input type="text" id="mod-publico-${id}" value="${
+                <input type="text" id="mod-publico-${id}" value="${escapeHtml(
           tramite.publico_objetivo
-        }">
+        )}">
               </div>
               <div class="form-group">
                 <label>Dirección:</label>
-                <input type="text" id="mod-direccion-${id}" value="${
+                <input type="text" id="mod-direccion-${id}" value="${escapeHtml(
           tramite.direccion_tramitacion
-        }">
+        )}">
               </div>
               <div class="button-group">
                 <button type="submit" class="btn-save">💾 Guardar Cambios</button>
@@ -842,6 +855,7 @@
           </div>
         `;
 
+        // El resto del código de los event listeners se mantiene igual...
         const horasInput = document.getElementById(`mod-horas-${id}`);
         const minutosInput = document.getElementById(`mod-minutos-${id}`);
         const tiempoTexto = document.getElementById(`mod-tiempo-texto-${id}`);

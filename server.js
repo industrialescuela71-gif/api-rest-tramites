@@ -7,6 +7,16 @@ const app = express();
 const { readTramites, writeTramites } = require("./utils/fileManager"); // Importamos las funciones
 const PORT = process.env.PORT || 3000;
 
+function sanitizeInput(text) {
+  if (typeof text !== "string") return text;
+  return text
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+    .replace(/&/g, "&amp;");
+}
+
 app.use(cors());
 // 2. Base de Datos Simulada (Carga los datos desde el archivo)
 // La variable tramites ahora es mutable y se carga al inicio.
@@ -53,14 +63,40 @@ app.post("/tramites", (req, res) => {
 
   const tramiteCompleto = {
     id: nextId++,
-    ...nuevoTramite,
+    titulo: sanitizeInput(nuevoTramite.titulo),
+    descripcion: sanitizeInput(nuevoTramite.descripcion),
+    tiempo_estimado: sanitizeInput(nuevoTramite.tiempo_estimado),
+    costo: sanitizeInput(nuevoTramite.costo),
+    publico_objetivo: sanitizeInput(nuevoTramite.publico_objetivo),
+    direccion_tramitacion: sanitizeInput(nuevoTramite.direccion_tramitacion),
   };
 
   tramites.push(tramiteCompleto);
-
-  // **NUEVO:** Escribir el array actualizado en el archivo JSON
   writeTramites(tramites);
+  res.status(201).json(tramiteCompleto);
+});
 
+app.post("/tramites", (req, res) => {
+  const nuevoTramite = req.body;
+
+  if (!nuevoTramite.titulo) {
+    return res
+      .status(400)
+      .json({ error: "El título del trámite es obligatorio." });
+  }
+
+  const tramiteCompleto = {
+    id: nextId++,
+    titulo: sanitizeInput(nuevoTramite.titulo),
+    descripcion: sanitizeInput(nuevoTramite.descripcion),
+    tiempo_estimado: sanitizeInput(nuevoTramite.tiempo_estimado),
+    costo: sanitizeInput(nuevoTramite.costo),
+    publico_objetivo: sanitizeInput(nuevoTramite.publico_objetivo),
+    direccion_tramitacion: sanitizeInput(nuevoTramite.direccion_tramitacion),
+  };
+
+  tramites.push(tramiteCompleto);
+  writeTramites(tramites);
   res.status(201).json(tramiteCompleto);
 });
 
@@ -86,7 +122,6 @@ app.get("/tramites/:id", (req, res) => {
   }
 });
 
-// D. ACTUALIZAR (UPDATE) - Verbo: PUT
 app.put("/tramites/:id", (req, res) => {
   const idBuscado = parseInt(req.params.id);
   const index = tramites.findIndex((t) => t.id === idBuscado);
@@ -94,12 +129,15 @@ app.put("/tramites/:id", (req, res) => {
   if (index !== -1) {
     tramites[index] = {
       id: idBuscado,
-      ...req.body,
+      titulo: sanitizeInput(req.body.titulo),
+      descripcion: sanitizeInput(req.body.descripcion),
+      tiempo_estimado: sanitizeInput(req.body.tiempo_estimado),
+      costo: sanitizeInput(req.body.costo),
+      publico_objetivo: sanitizeInput(req.body.publico_objetivo),
+      direccion_tramitacion: sanitizeInput(req.body.direccion_tramitacion),
     };
 
-    // **NUEVO:** Escribir el array actualizado en el archivo JSON
     writeTramites(tramites);
-
     res.status(200).json(tramites[index]);
   } else {
     res.status(404).json({
