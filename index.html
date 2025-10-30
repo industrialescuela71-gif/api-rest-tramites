@@ -4,25 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Guía de Trámites - Administración Municipal</title>
-    <!-- Importar Font Awesome para íconos -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
     <style>
-      /* --- Paleta de Colores Profesional --- */
       :root {
-        --color-azul-principal: #004a99; /* Azul municipal oscuro */
-        --color-azul-secundario: #007bff; /* Azul primario para acciones */
-        --color-verde: #28a745; /* Verde para éxito */
-        --color-rojo: #dc3545; /* Rojo para peligro/eliminar */
-        --color-amarillo: #ffc107; /* Amarillo para advertencia/editar */
-        --color-gris: #6c757d; /* Gris para acciones secundarias */
+        --color-azul-principal: #004a99;
+        --color-azul-secundario: #007bff;
+        --color-verde: #28a745;
+        --color-rojo: #dc3545;
+        --color-amarillo: #ffc107;
+        --color-gris: #6c757d;
         --color-blanco: #ffffff;
-        --color-fondo: #f8f9fa; /* Un gris muy claro para el fondo */
+        --color-fondo: #f8f9fa;
         --color-texto-principal: #343a40;
         --color-texto-secundario: #6c757d;
         --color-borde: #dee2e6;
@@ -43,21 +40,170 @@
         color: var(--color-texto-principal);
       }
 
+      /* Ocultar el botón de mostrar contraseña en Microsoft Edge */
+      input[type="password"]::-ms-reveal,
+      input[type="password"]::-ms-clear {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+
+      /* Estilos del modal de autenticación */
+      #auth-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--color-azul-principal) 0%,
+          var(--color-azul-secundario) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      #auth-overlay.hidden {
+        display: none;
+      }
+
+      .auth-box {
+        background: var(--color-blanco);
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        padding: 40px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+      }
+
+      .auth-box .lock-icon {
+        font-size: 4em;
+        color: var(--color-azul-principal);
+        margin-bottom: 20px;
+      }
+
+      .auth-box h2 {
+        color: var(--color-azul-principal);
+        margin-bottom: 10px;
+        font-size: 1.8em;
+      }
+
+      .auth-box p {
+        color: var(--color-texto-secundario);
+        margin-bottom: 30px;
+      }
+
+      .auth-input-group {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .auth-input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--color-texto-principal);
+      }
+
+      .auth-input-wrapper {
+        position: relative;
+      }
+
+      .auth-input-group input {
+        width: 100%;
+        padding: 12px 45px 12px 15px;
+        border: 2px solid var(--color-borde);
+        border-radius: 8px;
+        font-size: 1em;
+        transition: border-color 0.2s ease;
+      }
+
+      .auth-input-group input:focus {
+        outline: none;
+        border-color: var(--color-azul-secundario);
+      }
+
+      .auth-toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--color-gris);
+        cursor: pointer;
+        padding: 5px;
+        font-size: 1.1em;
+      }
+
+      .auth-toggle-password:hover {
+        color: var(--color-azul-secundario);
+      }
+
+      .auth-button {
+        width: 100%;
+        padding: 14px;
+        background: var(--color-azul-secundario);
+        color: var(--color-blanco);
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .auth-button:hover {
+        background: #0056b3;
+      }
+
+      .auth-error {
+        color: var(--color-rojo);
+        margin-top: 15px;
+        font-weight: 500;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .auth-error.show {
+        display: flex;
+      }
+
+      /* Contenido principal oculto hasta autenticación */
+      #main-content {
+        display: none;
+      }
+
+      #main-content.authenticated {
+        display: block;
+      }
+
       .container {
         max-width: 1200px;
         margin: 0 auto;
         background: var(--color-blanco);
-        border-radius: 8px; /* Bordes más sutiles */
+        border-radius: 8px;
         border: 1px solid var(--color-borde);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra muy suave */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         overflow: hidden;
       }
 
       .header {
-        background: var(--color-azul-principal); /* Color sólido */
+        background: var(--color-azul-principal);
         color: var(--color-blanco);
         padding: 25px 20px;
         text-align: center;
+        position: relative;
       }
 
       .header h1 {
@@ -76,8 +222,29 @@
         word-break: break-all;
       }
 
+      .logout-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--color-blanco);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: background-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .logout-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
       #api-url-label {
-        background: rgba(255, 255, 255, 0.1); /* Más sutil */
+        background: rgba(255, 255, 255, 0.1);
         padding: 5px 12px;
         border-radius: 8px;
         display: inline-block;
@@ -96,7 +263,6 @@
         padding: 20px 15px;
         margin-bottom: 20px;
         border: 1px solid var(--color-borde);
-        /* Se eliminan transiciones y sombras al hover */
       }
 
       .section h2 {
@@ -104,16 +270,13 @@
         font-size: clamp(1.3em, 4vw, 1.8em);
         margin-bottom: 15px;
         padding-bottom: 12px;
-        border-bottom: 1px solid var(--color-borde); /* Borde sutil */
+        border-bottom: 1px solid var(--color-borde);
         display: flex;
         align-items: center;
         gap: 8px;
         word-break: break-word;
       }
 
-      /* Se elimina el ::before "▶" */
-
-      /* --- Estilo Base de Botones --- */
       button {
         background: var(--color-azul-secundario);
         color: var(--color-blanco);
@@ -122,9 +285,9 @@
         font-size: clamp(0.9em, 3vw, 1em);
         border-radius: 8px;
         cursor: pointer;
-        transition: background-color 0.2s ease, border-color 0.2s ease; /* Transición simple */
+        transition: background-color 0.2s ease, border-color 0.2s ease;
         font-weight: 500;
-        box-shadow: none; /* Sin sombra */
+        box-shadow: none;
         width: 100%;
         display: flex;
         align-items: center;
@@ -133,14 +296,8 @@
       }
 
       button:hover {
-        background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+        background-color: #0056b3;
         border-color: #0056b3;
-        transform: none; /* Sin transformaciones */
-        box-shadow: none;
-      }
-
-      button:active {
-        transform: none;
       }
 
       .form-group {
@@ -159,8 +316,8 @@
       .form-group textarea {
         width: 100%;
         padding: 12px 15px;
-        border: 1px solid var(--color-borde); /* Borde más fino */
-        border-radius: 8px; /* Radio consistente */
+        border: 1px solid var(--color-borde);
+        border-radius: 8px;
         font-size: clamp(0.9em, 3vw, 1em);
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
         font-family: inherit;
@@ -170,7 +327,7 @@
       .form-group textarea:focus {
         outline: none;
         border-color: var(--color-azul-secundario);
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Foco limpio */
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
       }
 
       .form-group textarea {
@@ -198,7 +355,7 @@
 
       #tiempo_texto {
         margin-top: 10px;
-        color: var(--color-texto-secundario); /* Color más sobrio */
+        color: var(--color-texto-secundario);
         font-style: italic;
         font-weight: 500;
         width: 100%;
@@ -234,12 +391,11 @@
         border-radius: 8px;
         padding: 15px;
         margin-bottom: 15px;
-        transition: border-color 0.2s ease; /* Transición simple */
+        transition: border-color 0.2s ease;
       }
 
       .tramite-card:hover {
         border-color: var(--color-azul-secundario);
-        box-shadow: none;
       }
 
       .tramite-card strong {
@@ -272,7 +428,7 @@
       }
 
       .tramite-card ul li .icon {
-        color: var(--color-azul-principal); /* Iconos en azul */
+        color: var(--color-azul-principal);
         width: 20px;
         text-align: center;
       }
@@ -282,7 +438,7 @@
       }
 
       .tramite-card ul li strong {
-        color: var(--color-texto-principal); /* Fuerte pero no verde */
+        color: var(--color-texto-principal);
       }
 
       .card-header {
@@ -315,7 +471,6 @@
         font-size: clamp(0.85em, 2.5vw, 0.9em);
       }
 
-      /* --- Colores Específicos de Botones --- */
       .btn-edit,
       .btn-save {
         background: var(--color-amarillo);
@@ -475,7 +630,7 @@
         }
 
         button {
-          width: auto; /* Botones no ocupan 100% en desktop */
+          width: auto;
         }
 
         .card-actions {
@@ -484,6 +639,16 @@
 
         .card-actions button {
           flex: 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .logout-button {
+          position: static;
+          margin-top: 15px;
+          width: fit-content;
+          margin-left: auto;
+          margin-right: auto;
         }
       }
 
@@ -519,157 +684,294 @@
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <h1>
-          <i class="fa-solid fa-folder-open"></i>
-          Administración de Guía de Trámites
-        </h1>
-        <p>Conectado a: <span id="api-url-label"></span></p>
-      </div>
-
-      <div class="content">
-        <div class="section">
-          <h2>
-            <i class="fa-solid fa-list-check"></i>
-            Ver trámites existentes
-          </h2>
-          <button onclick="obtenerTodos()">
-            <i class="fa-solid fa-sync"></i>
-            Obtener todos los trámites
-          </button>
+    <!-- Overlay de autenticación -->
+    <div id="auth-overlay">
+      <div class="auth-box">
+        <div class="lock-icon">
+          <i class="fa-solid fa-lock"></i>
         </div>
-
-        <div class="section">
-          <h2>
-            <i class="fa-solid fa-plus-circle"></i>
-            Crear nuevo trámite
-          </h2>
-          <button class="btn-toggle" onclick="toggleFormulario()">
-            <i id="toggle-icon" class="fa-solid fa-plus"></i>
-            <span id="toggle-text">Mostrar formulario</span>
-          </button>
-
-          <div id="form-container" class="form-container">
-            <form id="form-crear">
-              <div class="form-group">
-                <label>Título:</label>
-                <input
-                  type="text"
-                  id="titulo"
-                  required
-                  placeholder="Ingrese el título del trámite"
-                />
-              </div>
-              <div class="form-group">
-                <label>Descripción:</label>
-                <textarea
-                  id="descripcion"
-                  required
-                  placeholder="Ingrese la descripción detallada"
-                ></textarea>
-              </div>
-              <div class="form-group">
-                <label>Tiempo estimado:</label>
-                <div class="time-input-wrapper">
-                  <input type="number" id="horas" min="0" placeholder="Horas" />
-                  <span>h</span>
-                  <input
-                    type="number"
-                    id="minutos"
-                    min="0"
-                    max="59"
-                    placeholder="Minutos"
-                  />
-                  <span>min</span>
-                </div>
-                <p id="tiempo_texto"></p>
-                <input
-                  type="hidden"
-                  id="tiempo_estimado"
-                  name="tiempo_estimado"
-                  required
-                />
-              </div>
-
-              <script>
-                const horasInput = document.getElementById("horas");
-                const minutosInput = document.getElementById("minutos");
-                const tiempoTexto = document.getElementById("tiempo_texto");
-                const tiempoEstimadoHidden =
-                  document.getElementById("tiempo_estimado");
-
-                function actualizarDescripcion() {
-                  const h = parseInt(horasInput.value) || 0;
-                  const m = parseInt(minutosInput.value) || 0;
-                  let texto = "";
-
-                  if (h > 0 && m > 0)
-                    texto = `${h} ${h === 1 ? "hora" : "horas"} y ${m} ${
-                      m === 1 ? "minuto" : "minutos"
-                    }`;
-                  else if (h > 0) texto = `${h} ${h === 1 ? "hora" : "horas"}`;
-                  else if (m > 0)
-                    texto = `${m} ${m === 1 ? "minuto" : "minutos"}`;
-                  else texto = "";
-
-                  // Usar innerHTML para renderizar el ícono
-                  tiempoTexto.innerHTML = texto
-                    ? `<i class="fa-solid fa-clock"></i> ${texto}`
-                    : "";
-                  tiempoEstimadoHidden.value = texto;
-                }
-
-                horasInput.addEventListener("input", actualizarDescripcion);
-                minutosInput.addEventListener("input", actualizarDescripcion);
-              </script>
-
-              <div class="form-group">
-                <label>Costo:</label>
-                <input
-                  type="text"
-                  id="costo"
-                  required
-                  placeholder="Ej: $500 o Gratuito"
-                />
-              </div>
-              <div class="form-group">
-                <label>Público Objetivo:</label>
-                <input
-                  type="text"
-                  id="publico_objetivo"
-                  required
-                  placeholder="Ej: Ciudadanos mayores de 18 años"
-                />
-              </div>
-              <div class="form-group">
-                <label>Dirección:</label>
-                <input
-                  type="text"
-                  id="direccion_tramitacion"
-                  required
-                  placeholder="Dirección donde se realiza el trámite"
-                />
-              </div>
-              <button type="submit" class="btn-submit">
-                <i class="fa-solid fa-check"></i>
-                Crear trámite
+        <h2>Acceso restringido</h2>
+        <p>Ingrese la contraseña para acceder al panel de administración</p>
+        <form id="auth-form">
+          <div class="auth-input-group">
+            <label for="password-input">Contraseña:</label>
+            <div class="auth-input-wrapper">
+              <input
+                type="password"
+                id="password-input"
+                placeholder="Ingrese la contraseña"
+                autocomplete="off"
+                required
+              />
+              <button
+                type="button"
+                class="auth-toggle-password"
+                id="toggle-password"
+              >
+                <i class="fa-solid fa-eye"></i>
               </button>
-            </form>
+            </div>
           </div>
+          <button type="submit" class="auth-button">
+            <i class="fa-solid fa-sign-in-alt"></i>
+            Ingresar
+          </button>
+          <div class="auth-error" id="auth-error">
+            <i class="fa-solid fa-exclamation-circle"></i>
+            <span>Contraseña incorrecta. Intente nuevamente.</span>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Contenido principal (oculto hasta autenticación) -->
+    <div id="main-content">
+      <div class="container">
+        <div class="header">
+          <button class="logout-button" onclick="logout()">
+            <i class="fa-solid fa-sign-out-alt"></i>
+            Cerrar Sesión
+          </button>
+          <h1>
+            <i class="fa-solid fa-folder-open"></i>
+            Administración de Guía de Trámites
+          </h1>
+          <p>Conectado a: <span id="api-url-label"></span></p>
         </div>
 
-        <div class="section">
-          <h2>
-            <i class="fa-solid fa-chart-bar"></i>
-            Resultados de la API
-          </h2>
-          <div id="resultados">Esperando acción...</div>
+        <div class="content">
+          <div class="section">
+            <h2>
+              <i class="fa-solid fa-list-check"></i>
+              Ver trámites existentes
+            </h2>
+            <button onclick="obtenerTodos()">
+              <i class="fa-solid fa-sync"></i>
+              Obtener todos los trámites
+            </button>
+          </div>
+
+          <div class="section">
+            <h2>
+              <i class="fa-solid fa-plus-circle"></i>
+              Crear nuevo trámite
+            </h2>
+            <button class="btn-toggle" onclick="toggleFormulario()">
+              <i id="toggle-icon" class="fa-solid fa-plus"></i>
+              <span id="toggle-text">Mostrar formulario</span>
+            </button>
+
+            <div id="form-container" class="form-container">
+              <form id="form-crear">
+                <div class="form-group">
+                  <label>Título:</label>
+                  <input
+                    type="text"
+                    id="titulo"
+                    required
+                    placeholder="Ingrese el título del trámite"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Descripción:</label>
+                  <textarea
+                    id="descripcion"
+                    required
+                    placeholder="Ingrese la descripción detallada"
+                  ></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Tiempo estimado:</label>
+                  <div class="time-input-wrapper">
+                    <input
+                      type="number"
+                      id="horas"
+                      min="0"
+                      placeholder="Horas"
+                    />
+                    <span>h</span>
+                    <input
+                      type="number"
+                      id="minutos"
+                      min="0"
+                      max="59"
+                      placeholder="Minutos"
+                    />
+                    <span>min</span>
+                  </div>
+                  <p id="tiempo_texto"></p>
+                  <input
+                    type="hidden"
+                    id="tiempo_estimado"
+                    name="tiempo_estimado"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Costo:</label>
+                  <input
+                    type="text"
+                    id="costo"
+                    required
+                    placeholder="Ej: $500 o Gratuito"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Público Objetivo:</label>
+                  <input
+                    type="text"
+                    id="publico_objetivo"
+                    required
+                    placeholder="Ej: Ciudadanos mayores de 18 años"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Dirección:</label>
+                  <input
+                    type="text"
+                    id="direccion_tramitacion"
+                    required
+                    placeholder="Dirección donde se realiza el trámite"
+                  />
+                </div>
+                <button type="submit" class="btn-submit">
+                  <i class="fa-solid fa-check"></i>
+                  Crear trámite
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>
+              <i class="fa-solid fa-chart-bar"></i>
+              Resultados de la API
+            </h2>
+            <div id="resultados">Esperando acción...</div>
+          </div>
         </div>
       </div>
     </div>
 
     <script>
+      // Sistema de autenticación con hash SHA-256
+      // Hash SHA-256 de "munibaradero": se calcula usando la Web Crypto API
+      const CORRECT_PASSWORD_HASH =
+        "0ea0c99582d9c68c03071748aa1dcf1cbed69eff7b56b18035a017101b703345";
+
+      // Función para calcular el hash SHA-256 de un texto
+      async function sha256(text) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      // Verificar si ya está autenticado (sessionStorage)
+      function checkAuthentication() {
+        return sessionStorage.getItem("authenticated") === "true";
+      }
+
+      // Función de autenticación
+      async function authenticate(password) {
+        const hash = await sha256(password);
+        return hash === CORRECT_PASSWORD_HASH;
+      }
+
+      // Toggle visibilidad de contraseña
+      document
+        .getElementById("toggle-password")
+        .addEventListener("click", function () {
+          const passwordInput = document.getElementById("password-input");
+          const icon = this.querySelector("i");
+
+          if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+          } else {
+            passwordInput.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+          }
+        });
+
+      // Manejar el formulario de autenticación
+      document
+        .getElementById("auth-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const password = document.getElementById("password-input").value;
+          const authError = document.getElementById("auth-error");
+          const authButton = this.querySelector(".auth-button");
+
+          // Deshabilitar botón mientras verifica
+          authButton.disabled = true;
+          authButton.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
+
+          const isValid = await authenticate(password);
+
+          if (isValid) {
+            // Autenticación exitosa
+            sessionStorage.setItem("authenticated", "true");
+            document.getElementById("auth-overlay").classList.add("hidden");
+            document
+              .getElementById("main-content")
+              .classList.add("authenticated");
+            authError.classList.remove("show");
+          } else {
+            // Contraseña incorrecta
+            authError.classList.add("show");
+            document.getElementById("password-input").value = "";
+            document.getElementById("password-input").focus();
+
+            // Shake animation
+            const authBox = document.querySelector(".auth-box");
+            authBox.style.animation = "shake 0.5s";
+            setTimeout(() => {
+              authBox.style.animation = "";
+            }, 500);
+          }
+
+          // Rehabilitar botón
+          authButton.disabled = false;
+          authButton.innerHTML =
+            '<i class="fa-solid fa-sign-in-alt"></i> Ingresar';
+        });
+
+      // Función para cerrar sesión
+      function logout() {
+        if (confirm("¿Está seguro que desea cerrar sesión?")) {
+          sessionStorage.removeItem("authenticated");
+          location.reload();
+        }
+      }
+
+      // Verificar autenticación al cargar la página
+      window.addEventListener("DOMContentLoaded", function () {
+        if (checkAuthentication()) {
+          document.getElementById("auth-overlay").classList.add("hidden");
+          document
+            .getElementById("main-content")
+            .classList.add("authenticated");
+        }
+      });
+
+      // Animación de shake para error
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+          20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Resto del código original de la aplicación
       function escapeHtml(text) {
         if (text === null || text === undefined) {
           return "";
@@ -683,6 +985,7 @@
         };
         return text.toString().replace(/[&<>"']/g, (m) => map[m]);
       }
+
       const API_URL =
         window.location.hostname.includes("localhost") ||
         window.location.hostname.includes("127.0.0.1")
@@ -700,11 +1003,11 @@
 
         if (formContainer.classList.contains("active")) {
           formContainer.classList.remove("active");
-          toggleIcon.className = "fa-solid fa-plus"; // Cambiar clase de ícono
+          toggleIcon.className = "fa-solid fa-plus";
           toggleText.textContent = "Mostrar Formulario";
         } else {
           formContainer.classList.add("active");
-          toggleIcon.className = "fa-solid fa-minus"; // Cambiar clase de ícono
+          toggleIcon.className = "fa-solid fa-minus";
           toggleText.textContent = "Ocultar Formulario";
         }
       }
@@ -740,7 +1043,6 @@
           let html =
             '<h3><i class="fa-solid fa-check-circle"></i> Trámites Encontrados:</h3>';
           data.forEach((tramite) => {
-            // Escapamos SOLO los datos del usuario, NO el HTML de estructura
             html += `
               <div class="tramite-card" id="card-${tramite.id}">
                 <div class="card-header">
@@ -786,6 +1088,33 @@
         }
       }
 
+      const horasInput = document.getElementById("horas");
+      const minutosInput = document.getElementById("minutos");
+      const tiempoTexto = document.getElementById("tiempo_texto");
+      const tiempoEstimadoHidden = document.getElementById("tiempo_estimado");
+
+      function actualizarDescripcion() {
+        const h = parseInt(horasInput.value) || 0;
+        const m = parseInt(minutosInput.value) || 0;
+        let texto = "";
+
+        if (h > 0 && m > 0)
+          texto = `${h} ${h === 1 ? "hora" : "horas"} y ${m} ${
+            m === 1 ? "minuto" : "minutos"
+          }`;
+        else if (h > 0) texto = `${h} ${h === 1 ? "hora" : "horas"}`;
+        else if (m > 0) texto = `${m} ${m === 1 ? "minuto" : "minutos"}`;
+        else texto = "";
+
+        tiempoTexto.innerHTML = texto
+          ? `<i class="fa-solid fa-clock"></i> ${texto}`
+          : "";
+        tiempoEstimadoHidden.value = texto;
+      }
+
+      horasInput.addEventListener("input", actualizarDescripcion);
+      minutosInput.addEventListener("input", actualizarDescripcion);
+
       document
         .getElementById("form-crear")
         .addEventListener("submit", async (e) => {
@@ -819,7 +1148,7 @@
                 `<span class="success-message"><i class="fa-solid fa-check-circle"></i> Trámite creado exitosamente (ID: <strong>${data.id}</strong>).</span>`
               );
               document.getElementById("form-crear").reset();
-              document.getElementById("tiempo_texto").innerHTML = ""; // Limpiar innerHTML
+              document.getElementById("tiempo_texto").innerHTML = "";
               toggleFormulario();
               obtenerTodos();
             } else {
@@ -833,8 +1162,6 @@
         });
 
       async function eliminarTramite(id) {
-        // Reemplazar confirm() por una solución modal en un futuro.
-        // Por ahora, lo mantenemos para funcionalidad.
         if (
           !window.confirm(`¿Está seguro de eliminar el trámite con ID ${id}?`)
         )
@@ -939,7 +1266,6 @@
           </div>
         `;
 
-        // Añadir listeners para el formulario dinámico de modificación
         const horasInput = document.getElementById(`mod-horas-${id}`);
         const minutosInput = document.getElementById(`mod-minutos-${id}`);
         const tiempoTexto = document.getElementById(`mod-tiempo-texto-${id}`);
@@ -966,7 +1292,7 @@
 
         horasInput.addEventListener("input", actualizarDescripcionMod);
         minutosInput.addEventListener("input", actualizarDescripcionMod);
-        actualizarDescripcionMod(); // Llamada inicial
+        actualizarDescripcionMod();
       }
 
       async function modificarTramite(e, id) {
